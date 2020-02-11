@@ -1,0 +1,81 @@
+package sample;
+
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Main extends Application {
+    Button ok = new Button("Search");
+    Button add = new Button ("Add word");
+    TextField search = new TextField();
+    VBox root = new VBox();
+    VBox results_box = new VBox();
+    VBox words_box = new VBox();
+    HBox menu = new HBox();
+    HBox res = new HBox();
+    ArrayList<String> words = new ArrayList<>();
+    ArrayList<String> results = new ArrayList<>();
+
+    @Override
+    public void start(Stage primaryStage) throws Exception
+    {
+
+        add.setOnAction(event -> add());
+        ok.setOnAction(event -> ok());
+        menu.getChildren().addAll(ok, add);
+        res.getChildren().addAll(results_box, words_box);
+        root.getChildren().addAll(menu, search, res);
+        results_box.setMinWidth(150);
+        primaryStage.setTitle("Search");
+        primaryStage.setScene(new Scene(root, 300, 800));
+        primaryStage.show();
+    }
+
+    public void add()
+    {
+        results_box.getChildren().clear();
+        results.clear();
+        words.add(search.getText());
+        words_box.getChildren().clear();
+        for(String s : words)
+        {
+            words_box.getChildren().add(new Label(s));
+        }
+        search.setText("");
+    }
+
+    public void ok()
+    {
+        results_box.getChildren().clear();
+        results.clear();
+        Pattern pattern = Pattern.compile("(\\w*)" + search.getText() + "(\\w*)");
+        Matcher matcher;
+        for(String s : words)
+        {
+            matcher = pattern.matcher(s);
+            if (matcher.matches())
+            {
+                results.add(s);
+            }
+        }
+        for(String s : results)
+        {
+            results_box.getChildren().add(new Label(s));
+        }
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
